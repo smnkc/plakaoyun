@@ -1,0 +1,24 @@
+{
+  "name": "PLAKATR - Türkiye Plakaları",
+  "short_name": "PLAKATR",
+  "description": "Türkiye şehirlerini ve plaka kodlarını eğlenceli bir şekilde öğrenin.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fcfcfc",
+  "theme_color": "#1e40af",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

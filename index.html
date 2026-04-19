@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PLAKATR</title>
+    
+    <!-- PWA Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e40af">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PLAKATR">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fcfcfc;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --text-main: #000000;
+            --text-dim: #71717a;
+            --accent: #e11d48;
+            --accent-glow: rgba(225, 29, 72, 0.15);
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.15);
+            --soft-bg: #f4f4f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #ffffff, #f2f2f7);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 20px;
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -1px;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #71717a;
+            font-weight: 400;
+        }
+
+        .top-nav {
+            width: 100%;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .nav-logo span {
+            color: var(--accent);
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
+        .btn {
+            touch-action: manipulation;
+            background: #ffffff;
+            border: 1px solid #e4e4e7;
+            color: #18181b;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            max-width: 320px;
+            margin: 8px 0;
+            font-weight: 600;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #f4f4f5;
+            border-color: #d4d4d8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active { transform: translateY(0); }
+
+        .btn-green { background: #10b981; color: white; border: none; }
+        .btn-green:hover { background: #059669; transform: translateY(-1px); }
+        .btn-red { background: #ef4444; color: white; border: none; }
+        .btn-red:hover { background: #dc2626; }
+        .btn-pass { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
+        .btn-pass:hover { background: #fef3c7; border-color: #f59e0b; }
+
+        /* Menu layout */
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .options-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .option-btn {
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            padding: 10px 20px;
+            color: #71717a;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .option-btn.selected {
+            background: #18181b;
+            color: #fff;
+            border-color: #18181b;
+        }
+
+        input.glass-input {
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            color: #000;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        input.glass-input:focus { border-color: #18181b; box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }
+
+        /* Game Board Redesign */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 8px 5px;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            min-width: 0;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #18181b;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .target-city {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin: 10px 0 20px 0;
+            letter-spacing: -1.5px;
+            color: #000;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Input Display Area */
+        .input-area {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-box {
+            width: 70px;
+            height: 90px;
+            border: 3px solid #e4e4e7;
+            border-radius: 16px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #18181b;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-box.active {
+            border-color: #18181b;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-area.correct .input-box {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+            animation: pulse 0.5s;
+        }
+
+        .input-area.wrong .input-box {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+            animation: shake 0.4s;
+        }
+
+        /* New Compact Numpad */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .numpad-btn {
+            touch-action: manipulation;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 16px;
+            padding: 20px 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #18181b;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            touch-action: manipulation;
+        }
+
+        .numpad-btn:active {
+            transform: scale(0.95);
+            background: #f4f4f5;
+        }
+
+        .numpad-btn.util {
+            background: #f4f4f5;
+            font-size: 1.1rem;
+            color: #71717a;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Lobby */
+        .lobby-code {
+            font-size: 3rem;
+            letter-spacing: 5px;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent-glow);
+            margin: 20px 0;
+            font-weight: 800;
+        }
+
+        /* Multiplayer Competitor */
+        .opponents-bar {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .player-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .p-name { font-weight: 600; font-size: 0.9rem; color: #71717a; }
+        .p-score { font-size: 1.25rem; color: #000; font-weight: 800; }
+
+        .loader {
+            border: 3px solid #f4f4f5;
+            border-top: 3px solid #18181b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #18181b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 9999;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            .top-nav { padding: 10px 20px; }
+            .container { padding: 10px; }
+            .hero-title { font-size: 2.5rem; }
+            .logo-container { margin-bottom: 20px; }
+            
+            .target-city { 
+                font-size: 2.8rem; 
+                margin: 5px 0 15px 0; 
+            }
+            .input-area { margin-bottom: 15px; }
+            .input-box {
+                width: 60px;
+                height: 80px;
+                font-size: 2.2rem;
+            }
+            .numpad { gap: 8px; }
+            .numpad-btn {
+                padding: 12px 0;
+                font-size: 1.4rem;
+                border-radius: 12px;
+            }
+            .stat-value { font-size: 1rem; }
+            .stat-label { font-size: 0.55rem; }
+            .glass { padding: 20px; }
+            
+            .container {
+                padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            }
+        }
+
+        #join-code::placeholder {
+            letter-spacing: normal;
+            font-size: 1.1rem;
+            color: #a1a1aa;
+        }
+
+    </style>
+</head>
+<body>
+
+<header class="top-nav">
+    <div class="nav-logo" onclick="resetApp()">PLAKA<span>TR</span></div>
+</header>
+
+<div id="toast-container" class="toast">
+    <span class="toast-icon">⚠️</span>
+    <span id="toast-msg">Uyarı mesajı</span>
+</div>
+
+<div class="container">
+    <div class="logo-container" id="main-logo-area">
+        <div class="logo">PLAKA<span>TR</span></div>
+        <h1 class="hero-title">Türkiye Plakaları</h1>
+        <p class="hero-subtitle">Şehirleri ve kodlarını ne kadar iyi tanıyorsun?</p>
+    </div>
+
+    <!-- MAIN MENU -->
+    <div id="screen-main" class="screen active glass">
+        <div class="menu-grid">
+            <button class="btn" onclick="showScreen('screen-sp-setup')">Tek Oyunculu</button>
+            <button class="btn" style="background: #fdf2f8; border-color: #fce7f3; color: #db2777;" onclick="startPractice()">Ezber Yap</button>
+            <button class="btn btn-green" onclick="showScreen('screen-mp-host')">Oda Kur</button>
+            <button class="btn" onclick="showScreen('screen-mp-join')">Odaya Katıl</button>
+        </div>
+    </div>
+
+    <!-- SP SETUP -->
+    <div id="screen-sp-setup" class="screen glass">
+        <h2>Tek Oyunculu Ayarları</h2>
+        <p style="color: var(--text-dim); margin: 15px 0 5px;">Can Hakkı</p>
+        <div class="options-row">
+            <button class="option-btn selected" id="sp-live--1" onclick="setGameOption('sp', 'lives', -1)">Sınırsız</button>
+            <input type="number" id="sp-lives-custom" class="glass-input" style="width:70px; padding:6px; margin:0;" placeholder="Özel" min="1" max="99" onchange="setGameOption('sp', 'lives', this.value)">
+        </div>
+
+        <p style="color: var(--text-dim); margin: 15px 0 5px;">Pas Hakkı</p>
+        <div class="options-row">
+            <button class="option-btn selected" id="sp-pass--1" onclick="setGameOption('sp', 'pass', -1)">Sınırsız</button>
+            <input type="number" id="sp-pass-custom" class="glass-input" style="width:70px; padding:6px; margin:0;" placeholder="Özel" min="0" max="99" onchange="setGameOption('sp', 'pass', this.value)">
+        </div>
+
+        <button class="btn btn-green" style="margin-top:20px;" onclick="startSinglePlayer()">Oyuna Başla</button>
+        <button class="btn" style="background:transparent; border:none; margin-top:5px" onclick="showScreen('screen-main')">Geri Dön</button>
+    </div>
+
+
+    <!-- MP HOST -->
+    <div id="screen-mp-host" class="screen glass">
+        <h2>Oda Kur</h2>
+
+        <p style="color: var(--text-dim); margin: 15px 0 5px;">Oyun Süresi</p>
+        <div class="options-row">
+            <button class="option-btn selected" onclick="selectMpDuration(this, 'unlimited')">Süresiz</button>
+            <button class="option-btn" onclick="selectMpDuration(this, '60')">1 Dk</button>
+            <button class="option-btn" onclick="selectMpDuration(this, '180')">3 Dk</button>
+            <button class="option-btn" onclick="selectMpDuration(this, '300')">5 Dk</button>
+        </div>
+
+        <p style="color: var(--text-dim); margin: 5px 0 5px;">Can Hakkı</p>
+        <div class="options-row">
+            <button class="option-btn selected" id="mp-live--1" onclick="setGameOption('mp', 'lives', -1)">Sınırsız</button>
+            <input type="number" id="mp-lives-custom" class="glass-input" style="width:70px; padding:6px; margin:0;" placeholder="Özel" min="1" max="99" onchange="setGameOption('mp', 'lives', this.value)">
+        </div>
+
+        <p style="color: var(--text-dim); margin: 5px 0 5px;">Pas Hakkı</p>
+        <div class="options-row">
+            <button class="option-btn selected" id="mp-pass--1" onclick="setGameOption('mp', 'pass', -1)">Sınırsız</button>
+            <input type="number" id="mp-pass-custom" class="glass-input" style="width:70px; padding:6px; margin:0;" placeholder="Özel" min="0" max="99" onchange="setGameOption('mp', 'pass', this.value)">
+        </div>
+
+        <button class="btn btn-green" id="btn-create-room" onclick="createRoom()" style="margin-top:15px;">Odayı Oluştur</button>
+        <button class="btn" style="background:transparent; border:none; margin-top:5px" onclick="showScreen('screen-main')">İptal</button>
+    </div>
+
+    <!-- MP LOBBY (HOST WAITING) -->
+    <div id="screen-mp-lobby" class="screen glass">
+        <h2 style="color: var(--success);">Odanız Hazır!</h2>
+        <p style="color: var(--text-dim); margin-top: 20px; font-weight: 600;">Katılım Kodunuz:</p>
+        <div class="lobby-code" id="lobby-code-display" onclick="copyRoomCode()" style="cursor:pointer;" title="Kopyalamak için tıkla">----</div>
+        <button class="btn btn-pass" style="max-width: 180px; padding: 8px; font-size: 0.9rem; margin-bottom: 20px" onclick="copyRoomCode()">Kodu Kopyala 📋</button>
+        <div class="loader"></div>
+        <p style="color: #71717a; font-size: 0.95rem; margin-top: 10px;">Arkadaşınız bu kodu girerek odaya katılabilir.</p>
+        <button class="btn btn-red" onclick="leaveRoom(true)" style="margin-top: 30px;">Odayı Kapat</button>
+    </div>
+
+    <!-- MP JOIN -->
+    <div id="screen-mp-join" class="screen glass">
+        <h2>Odaya Katıl</h2>
+        <input type="text" id="join-code" class="glass-input" placeholder="Kodu Girin" maxlength="4" style="margin-top:10px; font-size:1.8rem; letter-spacing:12px; font-weight:800; text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()">
+        <button class="btn btn-green" onclick="joinRoom()">Katıl ve Başla</button>
+        <button class="btn" style="background:transparent; border:none; margin-top:10px" onclick="showScreen('screen-main')">Geri</button>
+    </div>
+
+    <!-- GAME BOARD -->
+    <div id="screen-game" class="screen glass" style="flex:1;">
+        
+        <div id="mp-opponents" class="opponents-bar" style="display:none;">
+            <div class="player-status">
+                <div class="p-name" id="p1-name">Sen</div>
+                <div class="p-score" id="p1-score">0 / 81</div>
+            </div>
+            <div style="font-weight:800; color:var(--text-dim); align-self:center;">VS</div>
+            <div class="player-status">
+                <div class="p-name" id="p2-name">Rakip</div>
+                <div class="p-score" id="p2-score">0 / 81</div>
+            </div>
+        </div>
+
+        <div class="game-header">
+            <div class="stat-box">
+                <div class="stat-label">Skor</div>
+                <div class="stat-value"><span id="score-val">0</span>/81</div>
+            </div>
+            
+            <div id="lives-container" style="display:none;" class="stat-box">
+                <div class="stat-label">Can</div>
+                <div class="stat-value" id="lives-val">-</div>
+            </div>
+
+            <div id="pass-stat-box" style="display:none;" class="stat-box">
+                <div class="stat-label">Pas</div>
+                <div class="stat-value" id="pass-val">-</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">Süre</div>
+                <div class="stat-value" id="timer-val">00:00</div>
+            </div>
+        </div>
+
+        <div class="target-city" id="target-city">Hazırlanıyor...</div>
+
+        <!-- 2-Digit Input Display -->
+        <div class="input-area" id="game-input-area">
+            <div class="input-box active" id="digit-1"></div>
+            <div class="input-box" id="digit-2"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px;">
+            <button class="btn btn-pass" id="btn-pass" style="max-width: 150px; padding: 6px 12px; font-size: 1rem; margin-bottom:10px" onclick="passQuestion()">Pas Geç ⏭️</button>
+            <button class="btn" id="btn-reveal" style="display:none; max-width: 150px; padding: 6px 12px; font-size: 1rem; margin-bottom:10px; background: #fef9c3; border-color: #fde047; color: #854d0e;" onclick="revealAnswer()">Cevabı Gör 💡</button>
+        </div>
+
+        <div class="numpad" id="numpad">
+            <!-- JS will inject buttons 1-9, C, 0, Back -->
+        </div>
+        
+        <button class="btn btn-red" style="margin-top: 30px;" onclick="exitGame()">Oyundan Çık</button>
+    </div>
+
+    <!-- END SCREEN -->
+    <div id="screen-end" class="screen glass">
+        <h2 id="end-title" style="font-size: 2.5rem; margin-bottom: 10px;">Oyun Bitti!</h2>
+        <div class="stat-box" style="margin: 20px 0;">
+            <div class="stat-label">Sonuç</div>
+            <div class="stat-value" id="end-score" style="font-size: 2.5rem;">0 Doğru</div>
+        </div>
+        <div class="stat-box" style="margin-bottom: 20px;">
+            <div class="stat-label">Geçen Süre</div>
+            <div class="stat-value" id="end-time">00:00</div>
+        </div>
+        
+        <div id="end-mp-status" style="display:none; text-align:center; margin-bottom:20px; font-size:1.2rem; color:var(--accent);"></div>
+
+        <button class="btn btn-green" onclick="resetApp()">Ana Menü</button>
+    </div>
+
+</div>
+
+<script>
+    const PLATES = [
+        "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir",
+        "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli",
+        "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari",
+        "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir",
+        "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir",
+        "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat",
+        "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman",
+        "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
+    ];
+
+    // App State
+    let state = {
+        mode: 'sp',
+        gameMode: 'cansiz',
+        maxLives: -1,
+        lives: -1,
+        passLimit: -1,
+        passesLeft: -1,
+        mpDuration: 'unlimited',
+        roomCode: null,
+        playerId: null,
+        isHost: false,
+        syncInterval: null,
+        timerInterval: null,
+        timeElapsed: 0,
+        timeRemaining: 0, 
+        score: 0,
+        currentCity: null,
+        questions: [], 
+        gameActive: false,
+        lost: false,
+        finished: false,
+        isPractice: false,
+        revealed: false,
+        currentInput: "" // Tracking 1-2 digit input
+    };
+
+    // --- REFACTORED NAVIGATION & VALIDATION ---
+    function showToast(msg) {
+        const toast = document.getElementById('toast-container');
+        const msgEl = document.getElementById('toast-msg');
+        msgEl.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const screen = document.getElementById(id);
+        if(screen) screen.classList.add('active');
+        
+        // Handle logo area visibility
+        const logoArea = document.getElementById('main-logo-area');
+        if (logoArea) {
+            logoArea.style.display = (id === 'screen-main') ? 'block' : 'none';
+        }
+        
+        // Focus handler for keyboard play
+        if(id === 'screen-game') {
+            state.currentInput = "";
+            updateInputDisplay();
+        }
+    }
+
+    function setGameOption(prefix, type, value) {
+        if (type === 'lives') {
+            state.maxLives = parseInt(value);
+            if(isNaN(state.maxLives)) state.maxLives = -1;
+            
+            state.gameMode = state.maxLives === -1 ? 'cansiz' : 'canli';
+            
+            const infBtn = document.getElementById(prefix+'-live--1');
+            if(infBtn) infBtn.classList.toggle('selected', state.maxLives === -1);
+            
+            const customInput = document.getElementById(prefix+'-lives-custom');
+            if(customInput) customInput.value = state.maxLives === -1 ? '' : state.maxLives;
+        } else if (type === 'pass') {
+            state.passLimit = parseInt(value);
+            if(isNaN(state.passLimit)) state.passLimit = -1;
+            document.getElementById(prefix+'-pass--1').classList.toggle('selected', state.passLimit === -1);
+            document.getElementById(prefix+'-pass-custom').value = state.passLimit === -1 ? '' : state.passLimit;
+        }
+    }
+
+    function startSinglePlayer() {
+        state.mode = 'sp';
+        state.isPractice = false;
+        initGameUI();
+    }
+
+    function startPractice() {
+        state.mode = 'sp';
+        state.isPractice = true;
+        state.gameMode = 'cansiz';
+        state.maxLives = -1;
+        state.passLimit = -1;
+        initGameUI();
+    }
+
+    function selectMpDuration(btn, dur) {
+        state.mpDuration = dur;
+        btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function getPlayerName() {
+        return "Sen";
+    }
+
+    async function createRoom() {
+        const name = getPlayerName();
+        if(!name) {
+            showToast("Lütfen önce bir kullanıcı adı girin.");
+            return;
+        }
+
+        const btn = document.getElementById('btn-create-room');
+        btn.disabled = true;
+        btn.innerText = "Kuruluyor...";
+
+        try {
+            const res = await fetch('api/create.php', {
+                method: 'POST',
+                headers:{ 'Content-Type':'application/json' },
+                body: JSON.stringify({ 
+                    duration: state.mpDuration, 
+                    playerName: name,
+                    gameMode: state.gameMode,
+                    livesLimit: state.maxLives,
+                    passLimit: state.passLimit
+                })
+            });
+            const data = await res.json();
+            if(data.success) {
+                state.mode = 'mp';
+                state.isHost = true;
+                state.roomCode = data.code;
+                state.playerId = data.player_id;
+                saveSession();
+                
+                document.getElementById('lobby-code-display').innerText = data.code;
+                showScreen('screen-mp-lobby');
+                startPollingWaiting();
+            } else {
+                showToast("Hata: " + data.error);
+            }
+        } catch(e) {
+            showToast("Sunucu hatası!");
+        }
+        btn.disabled = false;
+        btn.innerText = "Odayı Oluştur";
+    }
+
+    function copyRoomCode() {
+        const code = document.getElementById('lobby-code-display').innerText;
+        if(code && code !== '----') {
+            navigator.clipboard.writeText(code).then(() => {
+                showToast("Kod kopyalandı! Arkadaşına gönder.");
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('textarea');
+                input.value = code;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("Kod kopyalandı!");
+            });
+        }
+    }
+
+    async function joinRoom() {
+        const name = getPlayerName();
+        if(!name) {
+            showToast("Lütfen önce bir kullanıcı adı girin.");
+            return;
+        }
+
+        const code = document.getElementById('join-code').value.trim().toUpperCase();
+        if(code.length !== 4) return showToast("4 haneli kod girmelisiniz.");
+
+        try {
+            const res = await fetch('api/join.php', {
+                method: 'POST',
+                headers:{ 'Content-Type':'application/json' },
+                body: JSON.stringify({ code: code, playerName: name })
+            });
+            const data = await res.json();
+            if(data.success) {
+                state.mode = 'mp';
+                state.isHost = false;
+                state.roomCode = code;
+                state.playerId = data.player_id;
+                state.mpDuration = data.duration;
+                state.gameMode = data.gameMode;
+                state.maxLives = parseInt(data.livesLimit);
+                state.passLimit = parseInt(data.passLimit);
+                saveSession();
+                initGameUI(); // Start immediately for player 2
+            } else {
+                showToast("Hata: " + data.error);
+            }
+        } catch(e) {
+            showToast("Sunucu ile bağlantı kurulamadı.");
+        }
+    }
+
+    // Polling while waiting in lobby
+    function startPollingWaiting() {
+        state.syncInterval = setInterval(async () => {
+            if(!state.roomCode) return;
+            try {
+                const res = await fetch('api/sync.php', {
+                    method: 'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({ code: state.roomCode, player_id: state.playerId })
+                });
+                const data = await res.json();
+                if(data.success && data.state.status === 'playing') {
+                    clearInterval(state.syncInterval);
+                    initGameUI();
+                } else if(!data.success) {
+                    // Room might have been closed or timed out
+                    handleSyncError(data.error);
+                }
+            } catch(e) {
+                console.error("Lobby poll error", e);
+            }
+        }, 1500);
+    }
+
+    // Polling during game
+    function startGameSync() {
+        state.syncInterval = setInterval(async () => {
+            if(!state.gameActive || !state.roomCode) return;
+            
+            const payload = {
+                code: state.roomCode,
+                player_id: state.playerId,
+                score: state.score,
+                finished: state.score === 81 || state.lost,
+                lost: state.lost,
+                time_taken: state.timeElapsed
+            };
+
+            try {
+                const res = await fetch('api/sync.php', {
+                    method: 'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if(data.success) {
+                    let s = data.state;
+                    // Update opponent view
+                    let me = state.isHost ? s.player1 : s.player2;
+                    let opp = state.isHost ? s.player2 : s.player1;
+                    
+                    if(opp) {
+                        document.getElementById('p1-name').innerText = "Sen"; 
+                        document.getElementById('p2-name').innerText = "Rakip"; 
+                        document.getElementById('p2-score').innerText = opp.score + ' / 81';
+                        
+                        if(opp.lost) {
+                            document.getElementById('p2-name').innerText = "Rakip (ELENDİ)";
+                        }
+                    }
+
+                    // Check if game is globally finished on server
+                    if(s.status === 'finished') {
+                        finishGameMp(s);
+                        return;
+                    }
+
+                    // Handle local exit conditions while opponent still plays
+                    if(me.lost && s.status === 'playing') {
+                        document.getElementById('target-city').innerText = "Canınız bitti! Rakip bekleniyor...";
+                        document.getElementById('target-city').style.color = 'var(--danger)';
+                    } else if(me.score === 81 && s.status === 'playing') {
+                        document.getElementById('target-city').innerText = "Tebrikler! Rakip bekleniyor...";
+                        document.getElementById('target-city').style.color = 'var(--success)';
+                    }
+                } else {
+                    handleSyncError(data.error);
+                }
+            } catch(e) { 
+                console.error("Sync error", e); 
+                handleSyncError("Bağlantı koptu veya oda kapatıldı.");
+            }
+        }, 1500);
+    }
+
+    function handleSyncError(msg) {
+        if(!state.gameActive) return;
+        if(state.syncInterval) clearInterval(state.syncInterval);
+        state.syncInterval = null;
+        
+        // Humanize common technical errors
+        let displayMsg = msg;
+        if(msg === "Oda bulunamadı veya silinmiş.") displayMsg = "Rakip oyundan ayrıldı!";
+        
+        showToast(displayMsg || "Rakip ayrıldı, ana menüye dönülüyor...");
+        
+        state.gameActive = false;
+        setTimeout(() => { resetApp(); }, 2000);
+    }
+
+    function leaveRoom() {
+        if(state.syncInterval) clearInterval(state.syncInterval);
+        
+        const code = state.roomCode;
+        const pid = state.playerId;
+
+        // Clean up UI immediately
+        resetApp();
+
+        // Send request in background 
+        if(code) {
+            fetch('api/leave.php', {
+                method: 'POST',
+                headers:{ 'Content-Type':'application/json'},
+                body: JSON.stringify({ code: code, player_id: pid })
+            }).catch(e => console.log("Leave notify error", e));
+        }
+    }
+
+    function exitGame() {
+        if(state.mode === 'mp') leaveRoom();
+        else resetApp();
+    }
+    window.exitGame = exitGame; // Ensure accessibility
+
+    function resetApp() {
+        if(state.syncInterval) clearInterval(state.syncInterval);
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        state.roomCode = null;
+        state.playerId = null;
+        state.gameActive = false;
+        document.body.classList.remove('game-active');
+        localStorage.removeItem('plakaGameSession');
+        
+        showScreen('screen-main');
+    }
+
+    // Main Game Logic
+    function initGameUI() {
+        state.gameActive = true;
+        state.score = 0;
+        state.timeElapsed = 0;
+        state.lives = state.maxLives;
+        state.passesLeft = state.passLimit;
+        state.lost = false;
+        
+        state.questions = Array.from({length: 81}, (_, i) => i);
+        shuffleArray(state.questions);
+
+        // UI toggles
+        document.getElementById('mp-opponents').style.display = state.mode === 'mp' ? 'flex' : 'none';
+        
+        let showLives = state.gameMode === 'canli';
+        document.getElementById('lives-container').style.display = showLives ? 'block' : 'none';
+        if(showLives) updateLivesDisplay();
+
+        document.getElementById('pass-stat-box').style.display = state.passLimit !== -1 ? 'block' : 'none';
+        updatePassDisplay();
+
+        document.getElementById('score-val').innerText = '0';
+        
+        if(state.mode === 'mp' && state.mpDuration !== 'unlimited') {
+            state.timeRemaining = parseInt(state.mpDuration);
+            updateTimerDisplay(state.timeRemaining);
+        } else {
+            updateTimerDisplay(0);
+        }
+
+        // Practice mode specific UI
+        document.getElementById('btn-reveal').style.display = state.isPractice ? 'block' : 'none';
+        if(state.isPractice) {
+            document.getElementById('lives-container').style.display = 'none';
+            document.getElementById('pass-stat-box').style.display = 'none';
+        }
+
+        buildNumpad();
+        nextQuestion();
+        showScreen('screen-game');
+        
+        startTimer();
+        if(state.mode === 'mp') {
+            startGameSync();
+            // Set names
+            document.getElementById('p1-name').innerText = "Sen";
+            document.getElementById('p1-score').innerText = '0 / 81';
+            document.getElementById('p2-name').innerText = 'Rakip...';
+            document.getElementById('p2-score').innerText = '0 / 81';
+        }
+
+        saveSession();
+    }
+
+    function updateLivesDisplay() {
+        const val = document.getElementById('lives-val');
+        if(val) val.innerText = state.lives;
+    }
+
+    function updateMpScore() {
+        if (state.mode === 'mp') {
+            document.getElementById('score-val').innerText = state.score;
+            document.getElementById('p1-score').innerText = state.score + ' / 81';
+        }
+    }
+
+    function buildNumpad() {
+        const pad = document.getElementById('numpad');
+        pad.innerHTML = '';
+        
+        const buttons = [
+            '1','2','3',
+            '4','5','6',
+            '7','8','9',
+            'C','0','←'
+        ];
+
+        buttons.forEach(label => {
+            let btn = document.createElement('button');
+            btn.className = 'numpad-btn';
+            if(label === 'C' || label === '←') btn.classList.add('util');
+            btn.innerText = label;
+            btn.onclick = () => handleNumpadInput(label);
+            pad.appendChild(btn);
+        });
+    }
+
+    function handleNumpadInput(val) {
+        if(!state.gameActive || state.lost || state.revealed) return;
+
+        if(val === 'C') {
+            state.currentInput = "";
+        } else if (val === '←') {
+            state.currentInput = state.currentInput.slice(0, -1);
+        } else {
+            if(state.currentInput.length < 2) {
+                state.currentInput += val;
+            }
+        }
+
+        updateInputDisplay();
+
+        if(state.currentInput.length === 2) {
+            checkAnswer(parseInt(state.currentInput));
+        }
+    }
+
+    function updateInputDisplay() {
+        const d1 = document.getElementById('digit-1');
+        const d2 = document.getElementById('digit-2');
+        
+        d1.innerText = state.currentInput[0] || "";
+        d2.innerText = state.currentInput[1] || "";
+
+        d1.classList.toggle('active', state.currentInput.length === 0);
+        d2.classList.toggle('active', state.currentInput.length === 1);
+    }
+
+    function nextQuestion() {
+        state.currentInput = "";
+        state.revealed = false;
+        updateInputDisplay();
+        document.getElementById('game-input-area').className = 'input-area';
+        
+        if(state.questions.length === 0) {
+            state.finished = true; // Mark as finished locally
+            handleWin();
+            return;
+        }
+        state.currentCity = state.questions.pop();
+        document.getElementById('target-city').style.opacity = 0;
+        setTimeout(() => {
+            document.getElementById('target-city').innerText = PLATES[state.currentCity];
+            document.getElementById('target-city').style.opacity = 1;
+        }, 200);
+    }
+
+    function revealAnswer() {
+        if(!state.isPractice || state.revealed) return;
+        state.revealed = true;
+        const correctCode = (state.currentCity + 1).toString().padStart(2, '0');
+        
+        // Temporarily show the answer in boxes
+        const d1 = document.getElementById('digit-1');
+        const d2 = document.getElementById('digit-2');
+        
+        d1.innerText = correctCode[0];
+        d2.innerText = correctCode[1];
+        
+        d1.style.color = 'var(--accent)';
+        d2.style.color = 'var(--accent)';
+
+        setTimeout(() => {
+            d1.innerText = "";
+            d2.innerText = "";
+            d1.style.color = '';
+            d2.style.color = '';
+            state.currentInput = "";
+            state.revealed = false;
+            updateInputDisplay();
+        }, 1500);
+    }
+
+    function updatePassDisplay() {
+        if(state.passLimit !== -1) {
+            document.getElementById('pass-val').innerText = Math.max(0, state.passesLeft);
+            let btn = document.getElementById('btn-pass');
+            if(btn) {
+                if(state.passesLeft <= 0) {
+                    btn.disabled = true;
+                    btn.style.opacity = 0.5;
+                    btn.style.cursor = 'not-allowed';
+                } else {
+                    btn.disabled = false;
+                    btn.style.opacity = 1;
+                    btn.style.cursor = 'pointer';
+                }
+            }
+        } else {
+            document.getElementById('pass-val').innerText = 'Sınırsız';
+        }
+    }
+
+    function passQuestion() {
+        if(!state.gameActive || state.currentCity === null) return;
+        if(state.passLimit !== -1 && state.passesLeft <= 0) return;
+        
+        if(state.passLimit !== -1) {
+            state.passesLeft--;
+            updatePassDisplay();
+            saveSession();
+        }
+        
+        state.questions.unshift(state.currentCity);
+        nextQuestion();
+    }
+
+    function checkAnswer(val) {
+        if(!state.gameActive || state.lost) return;
+        
+        const correctCode = state.currentCity + 1;
+        const area = document.getElementById('game-input-area');
+
+        if(val === correctCode) {
+            // Correct
+            state.score++;
+            area.classList.add('correct');
+            
+            if(state.mode === 'mp') {
+                updateMpScore();
+            } else {
+                document.getElementById('score-val').innerText = state.score;
+            }
+            
+            saveSession();
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 600);
+
+        } else {
+            // Wrong
+            area.classList.add('wrong');
+            
+            if(state.gameMode === 'canli') {
+                state.lives--;
+                updateLivesDisplay();
+                if(state.lives <= 0) {
+                    handleLoss();
+                    return;
+                }
+            }
+            
+            setTimeout(() => {
+                state.currentInput = "";
+                updateInputDisplay();
+                area.classList.remove('wrong');
+            }, 600);
+        }
+    }
+
+    function startTimer() {
+        state.timerInterval = setInterval(() => {
+            if(!state.gameActive) return;
+            state.timeElapsed++;
+            saveSession();
+            
+            if(state.mode === 'mp' && state.mpDuration !== 'unlimited') {
+                state.timeRemaining--;
+                updateTimerDisplay(state.timeRemaining);
+                if(state.timeRemaining <= 0) {
+                    state.gameActive = false; // logic handled in sync loop
+                }
+            } else {
+                updateTimerDisplay(state.timeElapsed);
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay(seconds) {
+        let m = Math.floor(Math.max(seconds,0) / 60);
+        let s = Math.max(seconds,0) % 60;
+        document.getElementById('timer-val').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function handleWin() {
+        state.gameActive = false;
+        clearInterval(state.timerInterval);
+        
+        if(state.mode === 'sp') {
+            endGameDisplay(true, "Tebrikler! Hepsini Bildiniz!");
+        } else {
+            // Keep on game screen but update text
+            document.getElementById('target-city').innerText = "Tamamladınız! Rakip bekleniyor...";
+            document.getElementById('target-city').style.color = 'var(--success)';
+            saveSession();
+        }
+    }
+
+    function handleLoss() {
+        if(state.mode === 'sp') {
+            clearInterval(state.timerInterval);
+            state.gameActive = false;
+            endGameDisplay(false, "Canınız Bitti!");
+        } else {
+            state.lost = true;
+            document.getElementById('target-city').innerText = "Canınız bitti! Rakip bekleniyor...";
+            document.getElementById('target-city').style.color = 'var(--danger)';
+            saveSession();
+        }
+    }
+
+    function endGameDisplay(isWin, titleMessage) {
+        document.getElementById('end-title').innerText = titleMessage;
+        document.getElementById('end-title').style.color = isWin ? 'var(--success)' : 'var(--danger)';
+        document.getElementById('end-score').innerText = `${state.score} Doğru`;
+        
+        let m = Math.floor(state.timeElapsed / 60);
+        let s = state.timeElapsed % 60;
+        document.getElementById('end-time').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+        
+        document.getElementById('end-mp-status').style.display = 'none';
+        showScreen('screen-end');
+        localStorage.removeItem('plakaGameSession');
+    }
+
+    function finishGameMp(serverState) {
+        state.gameActive = false;
+        clearInterval(state.timerInterval);
+        clearInterval(state.syncInterval);
+
+        let me = state.isHost ? serverState.player1 : serverState.player2;
+        let opp = state.isHost ? serverState.player2 : serverState.player1;
+
+        let resMsg = "Berabere!";
+        let detailMsg = "Puanlar ve süreler eşit.";
+        let col = "var(--text-main)";
+
+        if (me.score > opp.score) {
+            resMsg = "Kazandın!";
+            detailMsg = "Puan üstünlüğü ile kazandınız.";
+            col = "var(--success)";
+        } else if (me.score < opp.score) {
+            resMsg = "Kaybettin!";
+            detailMsg = "Rakip daha yüksek puan topladı.";
+            col = "var(--danger)";
+        } else {
+            // Scores are equal, check tie-breakers
+            if (me.score === 81) {
+                // Both completed 81/81
+                const myTime = parseInt(me.time_taken) || 9999;
+                const oppTime = parseInt(opp.time_taken) || 9999;
+                if (myTime < oppTime) {
+                    resMsg = "Kazandın!";
+                    detailMsg = "Aynı puanda daha hızlıydınız.";
+                    col = "var(--success)";
+                } else if (myTime > oppTime) {
+                    resMsg = "Kaybettin!";
+                    detailMsg = "Rakip daha hızlı tamamladı.";
+                    col = "var(--danger)";
+                }
+            } else {
+                // Scores are equal but less than 81
+                if (me.lost && !opp.lost) {
+                    resMsg = "Kaybettin!";
+                    detailMsg = "Aynı puanda rakipten önce elendiniz.";
+                    col = "var(--danger)";
+                } else if (!me.lost && opp.lost) {
+                    resMsg = "Kazandın!";
+                    detailMsg = "Aynı puanda rakip sizden önce elendi.";
+                    col = "var(--success)";
+                } else if (state.mpDuration !== 'unlimited' && state.timeRemaining <= 0) {
+                   detailMsg = "Süre bitti, puanlar eşit.";
+                }
+            }
+        }
+
+        document.getElementById('end-title').innerText = resMsg;
+        document.getElementById('end-title').style.color = col;
+
+        let st = document.getElementById('end-mp-status');
+        st.style.display = 'block';
+        st.innerHTML = `<p style="font-weight:600; margin-bottom:5px; color:var(--text-dim); font-size:1rem;">${detailMsg}</p>
+                        <div style="display:flex; justify-content:center; gap:30px; font-size:1.4rem;">
+                            <div>Sen: <b>${me.score}</b></div>
+                            <div>Rakip: <b>${opp.score}</b></div>
+                        </div>`;
+        
+        document.getElementById('end-score').innerText = `${state.score} Doğru`;
+        
+        let m = Math.floor(state.timeElapsed / 60);
+        let s = state.timeElapsed % 60;
+        document.getElementById('end-time').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+
+        showScreen('screen-end');
+        localStorage.removeItem('plakaGameSession');
+    }
+
+    // Session recovery to protect against F5 refresh
+    function saveSession() {
+        if(!state.gameActive && !state.roomCode) return;
+        let p = {
+            mode: state.mode,
+            gameMode: state.gameMode,
+            lives: state.lives,
+            maxLives: state.maxLives,
+            passLimit: state.passLimit,
+            passesLeft: state.passesLeft,
+            lost: state.lost,
+            mpDuration: state.mpDuration,
+            roomCode: state.roomCode,
+            playerId: state.playerId,
+            isHost: state.isHost,
+            isPractice: state.isPractice,
+            lost: state.lost,
+            finished: state.finished,
+            timeElapsed: state.timeElapsed,
+            score: state.score,
+            currentCity: state.currentCity,
+            questions: state.questions
+        };
+        localStorage.setItem('plakaGameSession', JSON.stringify(p));
+    }
+
+    function loadSession() {
+        let sd = localStorage.getItem('plakaGameSession');
+        if(sd) {
+            try {
+                let parsed = JSON.parse(sd);
+                // Assign mapped state
+                Object.assign(state, parsed);
+                
+                if(state.mode === 'mp') {
+                    // Try to re-sync
+                    fetch('api/sync.php', {
+                        method: 'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body: JSON.stringify({ code: state.roomCode, player_id: state.playerId })
+                    }).then(r => r.json()).then(data => {
+                        if(data.success) {
+                            if(data.state.status === 'playing') {
+                                restoreGameUI(parsed);
+                                startGameSync();
+                            } else if (data.state.status === 'waiting') {
+                                document.getElementById('main-logo-area').style.display = 'block';
+                                document.getElementById('lobby-code-display').innerText = state.roomCode;
+                                showScreen('screen-mp-lobby');
+                                startPollingWaiting();
+                            } else {
+                                resetApp();
+                            }
+                        } else {
+                            resetApp();
+                        }
+                    }).catch(e => resetApp());
+                } else if(state.mode === 'sp') {
+                    document.getElementById('main-logo-area').style.display = 'none';
+                    restoreGameUI(parsed);
+                }
+            } catch(e) {
+                resetApp();
+            }
+        }
+    }
+
+    function restoreGameUI(parsedState) {
+        state.gameActive = true;
+        showScreen('screen-game');
+
+        document.getElementById('mp-opponents').style.display = state.mode === 'mp' ? 'flex' : 'none';
+        
+        let showLives = state.gameMode === 'canli';
+        document.getElementById('lives-container').style.display = showLives ? 'block' : 'none';
+        if(showLives) updateLivesDisplay();
+
+        let showPass = state.passLimit !== -1;
+        document.getElementById('pass-stat-box').style.display = showPass ? 'block' : 'none';
+        updatePassDisplay();
+
+        document.getElementById('score-val').innerText = state.score;
+        
+        if(state.mode === 'mp' && state.mpDuration !== 'unlimited') {
+            state.timeRemaining = parseInt(state.mpDuration) - state.timeElapsed;
+            updateTimerDisplay(state.timeRemaining);
+        } else {
+            updateTimerDisplay(state.timeElapsed);
+        }
+
+        // Restore practice mode specific UI
+        document.getElementById('btn-reveal').style.display = state.isPractice ? 'block' : 'none';
+        if(state.isPractice) {
+            document.getElementById('lives-container').style.display = 'none';
+            document.getElementById('pass-stat-box').style.display = 'none';
+        }
+
+        buildNumpad();
+        
+        // Set target city
+        if(state.currentCity !== null) {
+            document.getElementById('target-city').innerText = PLATES[state.currentCity];
+        }
+
+        startTimer();
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Init
+    window.onload = () => {
+        loadSession();
+        
+        // Physical Keyboard Support
+        window.addEventListener('keydown', (e) => {
+            if(document.getElementById('screen-game').classList.contains('active')) {
+                if(e.key >= '0' && e.key <= '9') {
+                    handleNumpadInput(e.key);
+                } else if (e.key === 'Backspace') {
+                    handleNumpadInput('←');
+                } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                    handleNumpadInput('C');
+                }
+            }
+        });
+        
+        // Notify server when tab is closed
+        window.addEventListener('beforeunload', () => {
+            if(state.mode === 'mp' && state.gameActive) {
+                const code = state.roomCode;
+                const pid = state.playerId;
+                if(code) {
+                    navigator.sendBeacon('api/leave.php', JSON.stringify({ code: code, player_id: pid }));
+                }
+            }
+        });
+    };
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.error('SW Registration failing', err));
+        });
+    }
+</script>
+</body>
+</html>
